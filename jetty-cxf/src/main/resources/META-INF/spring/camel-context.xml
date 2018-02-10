@@ -49,15 +49,14 @@
 
     <!-- this CamelContext contains the equivalent route from the Java DSL, but in XML
          so end users can see how to implement the route in both Java and XML -->
-    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+    <camelContext id="camel_xml_dsl" xmlns="http://camel.apache.org/schema/spring">
 
         <!-- property which contains port number -->
         <!-- we have file:target/custom.properties which can be optional and override existing values, we use this for testing purpose -->
         <camel:propertyPlaceholder id="properties" location="classpath:incident.properties"/>
 
         <!-- this is the first route that uses CXF as web service -->
-<!--
-        <route>
+        <route id="cxf">
             <from uri="cxf:bean:reportIncident"/>
             <convertBodyTo type="org.apache.camel.example.reportincident.InputReportIncident"/>
             <setHeader headerName="CamelFileName">
@@ -69,7 +68,6 @@
                 <method bean="responseBean" method="getOK"/>
             </transform>
         </route>
--->
 
         <!-- this is the 2nd route that pickup files and send them as emails -->
         <!--
@@ -81,7 +79,7 @@
               <to uri="smtp://someone@localhost?password=secret&amp;to=incident@mycompany.com"/>
             </route>
         -->
-        <route>
+        <route id="csv">
             <from uri="file://data?noop=true"/>
             <setHeader headerName="subject">
                 <constant>new incident reported</constant>

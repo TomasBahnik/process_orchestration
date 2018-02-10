@@ -56,7 +56,7 @@
         <camel:propertyPlaceholder id="properties" location="classpath:incident.properties"/>
 
         <!-- this is the first route that uses CXF as web service -->
-        <route>
+        <route id="cxf">
             <from uri="cxf:bean:reportIncident"/>
             <convertBodyTo type="org.apache.camel.example.reportincident.InputReportIncident"/>
             <setHeader headerName="CamelFileName">
@@ -79,7 +79,7 @@
               <to uri="smtp://someone@localhost?password=secret&amp;to=incident@mycompany.com"/>
             </route>
         -->
-        <route>
+        <route id="csv">
             <from uri="file://data?noop=true"/>
             <setHeader headerName="subject">
                 <constant>new incident reported</constant>
