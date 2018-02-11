@@ -27,8 +27,8 @@
     <version>2.20.2</version>
   </parent>
 
-  <artifactId>nitra-camel</artifactId>
-  <name>Nitra :: Camel :: Process Controller</name>
+  <artifactId>jetty-cxf</artifactId>
+  <name>Jetty :: CXF :: Camel</name>
   <description>
   </description>
   <packaging>war</packaging>
@@ -147,13 +147,7 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-csv</artifactId>
-      <version>1.5</version>
-    </dependency>
-
-  </dependencies>
+ </dependencies>
 
   <build>
     <plugins>

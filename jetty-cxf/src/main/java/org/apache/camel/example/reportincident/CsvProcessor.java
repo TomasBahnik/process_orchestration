@@ -16,6 +16,7 @@ import java.time.temporal.TemporalAccessor;
 public class CsvProcessor implements Processor {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CsvProcessor.class);
+    private static final int REQUEST_TIME = 15;
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -23,7 +24,7 @@ public class CsvProcessor implements Processor {
         LOGGER.info("Received in message with body length {}", inBody.length());
         CSVParser csvParser = CSVParser.parse(inBody, CSVFormat.DEFAULT);
         for (CSVRecord csvRecord : csvParser) {
-            String requestTime = csvRecord.get(15);
+            String requestTime = csvRecord.get(REQUEST_TIME);
             LOGGER.info("Trx Request Time {}", requestTime);
             TemporalAccessor date = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of("Europe/Paris")).parse(requestTime);
             Instant instant = Instant.from(date);

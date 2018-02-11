@@ -23,50 +23,55 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-  <!-- notice Camel will only update the routes that has been changed, so you can edit either either route or both
-       and save the file, and Camel will update only what is required -->
+    <!-- notice Camel will only update the routes that has been changed, so you can edit either either route or both
+         and save the file, and Camel will update only what is required -->
 
-  <bean id="csvProcessor" class="org.apache.camel.example.reload.CsvProcessor">
-    <property name="limit" value="14"/>
-  </bean>
+    <bean id="csvProcessor" class="org.apache.camel.example.reload.CsvProcessor">
+        <property name="limit" value="14"/>
+    </bean>
 
-  <import resource="bar/barContext.xml"/>
+    <bean id="accessoryOrderProcessor" class="org.apache.camel.example.reload.AccessoryOrderProcessor">
+        <property name="paperPerTrx" value="14"/>
+    </bean>
 
-  <camelContext xmlns="http://camel.apache.org/schema/spring">
-  
-  	<routeContextRef ref="barContext"/>
 
-    <route id="timerFoo">
-      <from uri="timer:foo"/>
-      <to uri="direct:foo"/>
-      <!-- you can try changing me -->
-      <log message="Foo said: ${body}"/>
-    </route>
-    
-    <route id="timerBar">
-      <from uri="timer:bar"/>
-      <to uri="direct:bar"/>
-      <!-- you can try changing me -->
-      <log message="Bar rika: ${body}"/>
-    </route>
+    <import resource="bar/barContext.xml"/>
 
-    <route id="foo">
-      <from uri="direct:foo"/>
-      <transform>
-        <!-- and I can be changed too -->
-        <constant>Hello Foo!</constant>
-      </transform>
-    </route>
+    <camelContext xmlns="http://camel.apache.org/schema/spring">
 
-    <route id="csv">
-      <from uri="file://data?noop=true"/>
-      <setHeader headerName="subject">
-        <constant>new incident reported</constant>
-      </setHeader>
-      <process ref="csvProcessor"/>
-      <to uri="file://data/processedxxx"/>
-    </route>
+        <routeContextRef ref="barContext"/>
 
-  </camelContext>
+        <!--
+            <route id="timerFoo">
+              <from uri="timer:foo"/>
+              <to uri="direct:foo"/>
+              <log message="Foo said: ${body}"/>
+            </route>
+
+            <route id="timerBar">
+              <from uri="timer:bar"/>
+              <to uri="direct:bar"/>
+              <log message="Bar rika: ${body}"/>
+            </route>
+
+            <route id="foo">
+              <from uri="direct:foo"/>
+              <transform>
+                <constant>Hello Foo!</constant>
+              </transform>
+            </route>
+        -->
+
+
+        <route id="csv">
+            <from uri="file://data"/>
+            <setHeader headerName="subject">
+                <constant>new incident reported</constant>
+            </setHeader>
+            <process ref="csvProcessor"/>
+            <process ref="accessoryOrderProcessor"/>
+        </route>
+
+    </camelContext>
 
 </beans>
