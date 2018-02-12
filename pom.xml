@@ -35,7 +35,7 @@
 
   <modules>
     <module>jetty-cxf</module>
-    <module>reload</module>
+    <module>standalone-main</module>
   </modules>
 
   <properties>
