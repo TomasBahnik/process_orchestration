@@ -37,7 +37,7 @@
 
     <import resource="bar/barContext.xml"/>
 
-    <camelContext xmlns="http://camel.apache.org/schema/spring">
+    <camelContext id="camel_xml_dsl" xmlns="http://camel.apache.org/schema/spring">
 
         <routeContextRef ref="barContext"/>
 
