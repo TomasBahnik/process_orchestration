@@ -23,16 +23,25 @@ import org.apache.camel.spring.Main;
  */
 public final class CamelReloadMain {
 
+    public static final String SPRING_CAMEL_CONTEXT_XML = "META-INF/spring/camel-context.xml";
+    public static final String WATCH_DIRECTORY = "src/main/resources/META-INF/spring";
+    private static final String SPRING_CAMEL_CONTEXT_XML_KEY = "camel.context";
+    private static final String WATCH_DIRECTORY_KEY = "camel.watch.directory";
+
     private CamelReloadMain() {
     }
 
     public static void main(String[] args) throws Exception {
+        String camelContext = System.getProperty(SPRING_CAMEL_CONTEXT_XML_KEY, SPRING_CAMEL_CONTEXT_XML);
+        String camelWatchDirectory = System.getProperty(WATCH_DIRECTORY_KEY, WATCH_DIRECTORY);
+        System.out.printf("Camel context : %s%n", camelContext);
+        System.out.printf("Camel watch directory : %s%n", camelWatchDirectory);
         // Main makes it easier to run a Spring application
         Main main = new Main();
         // configure the location of the Spring XML file
-        main.setApplicationContextUri("META-INF/spring/camel-context.xml");
+        main.setApplicationContextUri(camelContext);
         // turn on reload when the XML file is updated in the source code
-        main.setFileWatchDirectory("src/main/resources/META-INF/spring");
+        main.setFileWatchDirectory(camelWatchDirectory);
         // run and block until Camel is stopped (or JVM terminated)
         main.run();
     }

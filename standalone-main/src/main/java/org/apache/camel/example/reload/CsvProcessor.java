@@ -26,6 +26,7 @@ public class CsvProcessor implements Processor {
         int length = inBody.length();
         CSVParser csvParser = CSVParser.parse(inBody, CSVFormat.DEFAULT);
         LOGGER.info("Received in message with size {}", length);
+        System.out.printf("Processor %s received in message with size %d%n", this.getClass().getCanonicalName(), length);
         int count = 0;
         for (CSVRecord csvRecord : csvParser) {
             String requestTime = csvRecord.get(REQUEST_TIME);
@@ -34,6 +35,8 @@ public class CsvProcessor implements Processor {
             TemporalAccessor date = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of("Europe/Paris")).parse(requestTime);
             Instant instant = Instant.from(date);
             LOGGER.info("\tTrx {}. request type : {}, request time : {}, instant : {} ", count, requestType, requestTime, instant);
+            System.out.printf("\tTrx %d. request type : %s, request time : %s, instant : %s%n",
+                    count, requestType, requestTime, instant);
         }
         exchange.getIn().setBody(count);
     }

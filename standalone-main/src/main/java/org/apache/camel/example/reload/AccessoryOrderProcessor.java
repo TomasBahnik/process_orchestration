@@ -12,9 +12,13 @@ public class AccessoryOrderProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        Integer inBody = exchange.getIn().getBody(Integer.class);
-        LOGGER.info("Received in message with {} trx, paper per trx {}", inBody, paperPerTrx);
-        LOGGER.info("Paper consumed {}", inBody * paperPerTrx);
+        Integer numOfTrx = exchange.getIn().getBody(Integer.class);
+        LOGGER.info("Received in message with {} trx, paper per trx {}", numOfTrx, paperPerTrx);
+        System.out.printf("Processor %s received in message with %d trx, paper per trx %d%n", this.getClass().getCanonicalName(),
+                numOfTrx, paperPerTrx);
+        int paperConsumed = numOfTrx * paperPerTrx;
+        LOGGER.info("Paper consumed {}", paperConsumed);
+        System.out.printf("Processor %s : Paper consumed %d%n", this.getClass().getCanonicalName(), paperConsumed);
     }
 
     public int getPaperPerTrx() {
