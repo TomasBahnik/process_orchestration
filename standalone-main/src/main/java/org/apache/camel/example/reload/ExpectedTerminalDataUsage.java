@@ -88,7 +88,7 @@ public class ExpectedTerminalDataUsage {
             String terminalId = terminal.get(0);
             terminals.add(terminalId);
         }
-        LOGGER.info("Terminals count {}", count);
+        LOGGER.info("Terminals count = {}", count);
         return terminals;
     }
 
@@ -117,7 +117,7 @@ public class ExpectedTerminalDataUsage {
                 }
             }
         }
-        LOGGER.info("Transactions count {}", count);
+        LOGGER.info("Transactions count = {}", count);
         return result;
     }
 }
