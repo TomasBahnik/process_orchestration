@@ -28,6 +28,9 @@
 
     <bean id="csvProcessor" class="org.apache.camel.example.reload.CsvProcessor">
         <property name="limit" value="14"/>
+        <property name="date" value="2018-02-13"/>
+        <property name="maxGapInSeconds" value="3600"/>
+
     </bean>
 
     <bean id="accessoryOrderProcessor" class="org.apache.camel.example.reload.AccessoryOrderProcessor">
@@ -111,6 +114,7 @@
                     <constant>Basic dG9tYXMuYmFobmlrQGFldmkuY3o6SHJkeUJ1ZHplc3h4eCEx</constant>
                 </setHeader>
                 <to uri="https://aevi-tools.atlassian.net/rest/api/2/issue"/>
+                <log message="${body}"/>
             </aggregate>
         </route>
 

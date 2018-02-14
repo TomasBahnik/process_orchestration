@@ -4,6 +4,8 @@ import static org.apache.camel.example.reload.ExpectedTerminalDataUsage.TERM_CSV
 
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,14 +26,18 @@ import java.util.Set;
  */
 public class TrendAnomaly {
 
+    static final LocalDate DATE = LocalDate.of(2018, 2, 13);
+    private final static Logger LOGGER = LoggerFactory.getLogger(TrendAnomaly.class);
+
     private static final String TRANSACTION_PATH = "C:\\Users\\moro\\git\\TomasBahnik\\process_orchestration\\standalone-main\\temp\\transactions.csv";
 
     private static final String REQUEST_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    static final String REQUEST_DATE_PATTERN = "yyyy-MM-dd";
 
-    private static final String TRANSACTION_TIMEZONE = "Europe/Prague";
+    static final String TRANSACTION_TIMEZONE = "Europe/Prague";
 
     public static void main(String[] args) throws Exception {
-        Set<String> exceedingTerminals = getTerminalsExceedingGap(getTerminalsFromNitra(), CsvProcessor.MAX_GAP_IN_SECONDS, CsvProcessor.DATE, CsvProcessor.FROM, CsvProcessor.TO,
+        Set<String> exceedingTerminals = getTerminalsExceedingGap(getTerminalsFromNitra(), CsvProcessor.MAX_GAP_IN_SECONDS, DATE, CsvProcessor.FROM, CsvProcessor.TO,
                 TRANSACTION_PATH);
         System.out.println(exceedingTerminals);
     }
@@ -53,6 +59,7 @@ public class TrendAnomaly {
 
     static Set<String> getTerminalsExceedingGap(Set<String> terminals, int maxGapInSeconds, LocalDate date,
                                                 LocalTime from, LocalTime to, CSVParser csvTransactions) {
+        LOGGER.info("Max Gap in Seconds {}, Date {}, From {}, To {}", maxGapInSeconds, date, from, to);
         Set<String> result = new HashSet<>();
         Map<String, LocalTime> earliestTransactions = new HashMap<>();
         for (CSVRecord csvRecord : csvTransactions) {

@@ -12,7 +12,7 @@ public class AccessoryOrderProcessor implements Processor {
     private static final String DESCRIPTION = "${Description}";
 
     private static final String JIRA_TASK_TEMP =
-            "{\"fields\":{\"project\":{\"key\": \"NITRADEMO\"},\"summary\": \"Lorem ipsum\",\"description\": \"${Description}\",\"issuetype\": {\"name\": \"Task\"}}}";
+            "{\"fields\":{\"project\":{\"key\": \"NITRADEMO\"},\"summary\": \"Incident-Terminals with transaction gaps\",\"description\": \"${Description}\",\"issuetype\": {\"name\": \"Task\"}}}";
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -20,7 +20,7 @@ public class AccessoryOrderProcessor implements Processor {
         LOGGER.info("Received in message : {}", inBody);
         //int paperConsumed = numOfTrx * paperPerTrx;
         //LOGGER.info("Paper consumed {}", paperConsumed);
-        String taskJson = JIRA_TASK_TEMP.replace(DESCRIPTION, "terminalsExceedingGap : " + inBody);
+        String taskJson = JIRA_TASK_TEMP.replace(DESCRIPTION, "Terminals exceeding transaciton gap : " + inBody);
         LOGGER.info("JIRA Task JSON {}", taskJson);
         exchange.getIn().setBody(taskJson);
     }
