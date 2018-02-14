@@ -34,6 +34,9 @@
         <property name="paperPerTrx" value="14"/>
     </bean>
 
+    <bean id="jiraProcessor" class="org.apache.camel.example.reload.JiraProcessor">
+    </bean>
+
     <!-- This is our aggregation strategy for the numbers received as input -->
     <bean id="csvAggregationStrategy" class="org.apache.camel.example.reload.CsvAggregationStrategy"/>
 
@@ -43,6 +46,24 @@
     <camelContext id="camel_xml_dsl" xmlns="http://camel.apache.org/schema/spring">
 
         <routeContextRef ref="barContext"/>
+
+        <!-- http://camel.apache.org/http.html -->
+        <!-- https://ecosystem.atlassian.net/wiki/spaces/JRJC/pages/27164680/Tutorial -->
+        <route id="jira">
+            <from uri="file:jira"/>
+            <process ref="jiraProcessor"/>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>POST</constant>
+            </setHeader>
+            <setHeader headerName="Content-Type">
+                <constant>application/json</constant>
+            </setHeader>
+            <setHeader headerName="Authorization">
+                <constant>Basic dG9tYXMuYmFobmlrQGFldmkuY3o6SHJkeUJ1ZHplc3h4eCEx</constant>
+            </setHeader>
+            <to uri="https://aevi-tools.atlassian.net/rest/api/2/issue?authMethod=Basic&amp;authUsername=tomas.bahnik@aevi.cz&amp;authPassword=HrdyBudzesxxx!1"/>
+            <log message="${body}"/>
+        </route>
 
         <!--
             <route id="timerFoo">
