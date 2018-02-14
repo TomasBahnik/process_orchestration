@@ -1,9 +1,13 @@
 package org.apache.camel.example.reload;
 
+import static org.apache.camel.example.reload.ExpectedTerminalDataUsage.TERM_CSV_FORMAT;
+
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -37,12 +41,10 @@ public class TrendAnomaly {
         System.out.println(exceedingTerminals);
     }
 
-    private static Set<String> getTerminalsFromNitra() {
-        Set<String> terminals = new HashSet<>();
-        terminals.add("VEGAT01");
-        terminals.add("WINC34");
-        terminals.add("WINC31");
-        return terminals;
+    private static Set<String> getTerminalsFromNitra() throws IOException {
+        FileInputStream inputStream = new FileInputStream(ExpectedTerminalDataUsage.TERMINAL_PATH);
+        CSVParser csvParser = CSVParser.parse(inputStream, Charset.forName("UTF8"), TERM_CSV_FORMAT);
+        return ExpectedTerminalDataUsage.getTerminalsFromNitra(csvParser);
     }
 
     private static Set<String> getTerminalsExceedingGap(Set<String> terminals, int maxGapInSeconds, LocalDate date,

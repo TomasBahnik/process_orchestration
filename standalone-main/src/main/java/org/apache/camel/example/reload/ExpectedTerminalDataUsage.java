@@ -30,7 +30,7 @@ public class ExpectedTerminalDataUsage {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ExpectedTerminalDataUsage.class);
 
-    private static final String TERMINAL_PATH = "C:\\Users\\moro\\git\\TomasBahnik\\process_orchestration\\standalone-main\\temp\\terminal.csv";
+    static final String TERMINAL_PATH = "C:\\Users\\moro\\git\\TomasBahnik\\process_orchestration\\standalone-main\\temp\\terminal.csv";
     private static final String TRANSACTION_PATH = "C:\\Users\\moro\\git\\TomasBahnik\\process_orchestration\\standalone-main\\temp\\transactions.csv";
 
     private static final String REQUEST_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
@@ -80,7 +80,7 @@ public class ExpectedTerminalDataUsage {
         return getTerminalsFromNitra(csvParser);
     }
 
-    private static Set<String> getTerminalsFromNitra(CSVParser csvTerminals) {
+    static Set<String> getTerminalsFromNitra(CSVParser csvTerminals) {
         Set<String> terminals = new HashSet<>();
         int count = 0;
         for (CSVRecord terminal : csvTerminals) {

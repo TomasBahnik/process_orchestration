@@ -61,7 +61,7 @@
             <setHeader headerName="Authorization">
                 <constant>Basic dG9tYXMuYmFobmlrQGFldmkuY3o6SHJkeUJ1ZHplc3h4eCEx</constant>
             </setHeader>
-            <to uri="https://aevi-tools.atlassian.net/rest/api/2/issue?authMethod=Basic&amp;authUsername=tomas.bahnik@aevi.cz&amp;authPassword=HrdyBudzesxxx!1"/>
+            <to uri="https://aevi-tools.atlassian.net/rest/api/2/issue"/>
             <log message="${body}"/>
         </route>
 
