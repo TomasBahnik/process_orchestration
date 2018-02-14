@@ -6,7 +6,6 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Duration;
@@ -30,13 +29,9 @@ public class TrendAnomaly {
     private static final String REQUEST_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     private static final String TRANSACTION_TIMEZONE = "Europe/Prague";
-    private static final int MAX_GAP_IN_SECONDS = 3600;
-    private static final LocalDate DATE = LocalDate.of(2017, 6, 5);
-    private static final LocalTime FROM = LocalTime.of(9, 0);
-    private static final LocalTime TO = LocalTime.of(13, 0);
 
     public static void main(String[] args) throws Exception {
-        Set<String> exceedingTerminals = getTerminalsExceedingGap(getTerminalsFromNitra(), MAX_GAP_IN_SECONDS, DATE, FROM, TO,
+        Set<String> exceedingTerminals = getTerminalsExceedingGap(getTerminalsFromNitra(), CsvProcessor.MAX_GAP_IN_SECONDS, CsvProcessor.DATE, CsvProcessor.FROM, CsvProcessor.TO,
                 TRANSACTION_PATH);
         System.out.println(exceedingTerminals);
     }
@@ -56,8 +51,8 @@ public class TrendAnomaly {
         return getTerminalsExceedingGap(terminals, maxGapInSeconds, date, from, to, csvTransactions);
     }
 
-    private static Set<String> getTerminalsExceedingGap(Set<String> terminals, int maxGapInSeconds, LocalDate date,
-                                                        LocalTime from, LocalTime to, CSVParser csvTransactions) {
+    static Set<String> getTerminalsExceedingGap(Set<String> terminals, int maxGapInSeconds, LocalDate date,
+                                                LocalTime from, LocalTime to, CSVParser csvTransactions) {
         Set<String> result = new HashSet<>();
         Map<String, LocalTime> earliestTransactions = new HashMap<>();
         for (CSVRecord csvRecord : csvTransactions) {

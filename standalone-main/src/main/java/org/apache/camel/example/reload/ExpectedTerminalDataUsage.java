@@ -59,9 +59,8 @@ public class ExpectedTerminalDataUsage {
         return getExpectedTerminalDataUsage(bytesPerTransaction, transactionCounts);
     }
 
-    static Map<String, Integer> getExpectedTerminalDataUsage(CSVParser csvTerminals, CSVParser csvTransactions,
+    static Map<String, Integer> getExpectedTerminalDataUsage(Set<String> terminals, CSVParser csvTransactions,
                                                              int bytesPerTransaction, LocalDateTime from) throws Exception {
-        Set<String> terminals = getTerminalsFromNitra(csvTerminals);
         Map<String, Integer> transactionCounts = getTransactionCount(terminals, csvTransactions, from);
         return getExpectedTerminalDataUsage(bytesPerTransaction, transactionCounts);
     }
