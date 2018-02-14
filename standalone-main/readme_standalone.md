@@ -59,10 +59,39 @@ INFO: Starting beans in phase 2147483646
 
 ### Changing Route
   
-   * Create directory `routes` and copy to it content of `src/main/resources/META-INF/spring
+   * Create directory `routes` and copy to it content of `standalone-main-2.20.2-jar-with-dependencies.jar\META-INF\spring`
+   * Clean `data` directory (`terminal.csv` and `transactions.csv`)
    * Start Camel as `java -Dcamel.watch.directory=routes -jar standalone-main-2.20.2-jar-with-dependencies.jar`
-   * Delete `<process ref="jiraProcessor"/>` form `routes/camel-context.xml - JIRA incident won't be created
-   * `JiraProcessor` log messages are missing   
+   * Delete `<to uri="https://aevi-tools.atlassian.net/rest/api/2/issue"/>` from `routes/camel-context.xml - JIRA incident won't be created
+      
+```
+[#4 - FileWatcherReloadStrategy] DefaultShutdownStrategy        INFO  Starting to graceful shutdown 1 routes (timeout 300 seconds)
+[_dsl) thread #5 - ShutdownTask] DefaultShutdownStrategy        INFO  Route: csv shutdown complete, was consuming from: file://data?noop=true
+[#4 - FileWatcherReloadStrategy] DefaultShutdownStrategy        INFO  Graceful shutdown of 1 routes completed in 0 seconds
+[#4 - FileWatcherReloadStrategy] SpringCamelContext             INFO  Route: csv is stopped, was consuming from: file://data?noop=true
+[#4 - FileWatcherReloadStrategy] SpringCamelContext             INFO  Route: csv is shutdown and removed, was consuming from: file://data?noop=true
+[#4 - FileWatcherReloadStrategy] FileEndpoint                   INFO  Endpoint is configured with noop=true so forcing endpoint to be idempotent as well
+[#4 - FileWatcherReloadStrategy] FileEndpoint                   INFO  Using default memory based idempotent repository with cache max size: 1000
+[#4 - FileWatcherReloadStrategy] AggregateProcessor             INFO  Defaulting to MemoryAggregationRepository
+[#4 - FileWatcherReloadStrategy] SpringCamelContext             INFO  Route: csv started and consuming from: file://data?noop=true
+[#4 - FileWatcherReloadStrategy] FileWatcherReloadStrategy      INFO  Reloaded routes: [csv] from XML resource: C:\Users\moro\temp\camel\routes\camel-context.xml
+[#4 - FileWatcherReloadStrategy] DefaultShutdownStrategy        INFO  Starting to graceful shutdown 1 routes (timeout 300 seconds)
+[_dsl) thread #5 - ShutdownTask] DefaultShutdownStrategy        INFO  Route: jira shutdown complete, was consuming from: file://jira
+[#4 - FileWatcherReloadStrategy] DefaultShutdownStrategy        INFO  Graceful shutdown of 1 routes completed in 0 seconds
+[#4 - FileWatcherReloadStrategy] SpringCamelContext             INFO  Route: jira is stopped, was consuming from: file://jira
+[#4 - FileWatcherReloadStrategy] SpringCamelContext             INFO  Route: jira is shutdown and removed, was consuming from: file://jira
+[#4 - FileWatcherReloadStrategy] DefaultShutdownStrategy        INFO  Starting to graceful shutdown 1 routes (timeout 300 seconds)
+[_dsl) thread #5 - ShutdownTask] DefaultShutdownStrategy        INFO  Route: csv shutdown complete, was consuming from: file://data?noop=true
+[#4 - FileWatcherReloadStrategy] DefaultShutdownStrategy        INFO  Graceful shutdown of 1 routes completed in 0 seconds
+[#4 - FileWatcherReloadStrategy] SpringCamelContext             INFO  Route: csv is stopped, was consuming from: file://data?noop=true
+[#4 - FileWatcherReloadStrategy] SpringCamelContext             INFO  Route: csv is shutdown and removed, was consuming from: file://data?noop=true
+[#4 - FileWatcherReloadStrategy] SpringCamelContext             INFO  Route: jira started and consuming from: file://jira
+[#4 - FileWatcherReloadStrategy] FileEndpoint                   INFO  Endpoint is configured with noop=true so forcing endpoint to be idempotent as well
+[#4 - FileWatcherReloadStrategy] FileEndpoint                   INFO  Using default memory based idempotent repository with cache max size: 1000
+[#4 - FileWatcherReloadStrategy] AggregateProcessor             INFO  Defaulting to MemoryAggregationRepository
+[#4 - FileWatcherReloadStrategy] SpringCamelContext             INFO  Route: csv started and consuming from: file://data?noop=true
+[#4 - FileWatcherReloadStrategy] FileWatcherReloadStrategy      INFO  Reloaded routes: [jira,csv] from XML resource: C:\Users\moro\temp\camel\routes\camel-context.xml
 
+```
    
    
