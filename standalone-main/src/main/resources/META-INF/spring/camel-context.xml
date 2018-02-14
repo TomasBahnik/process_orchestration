@@ -101,6 +101,16 @@
                 </setHeader>
                 <process ref="csvProcessor"/>
                 <process ref="accessoryOrderProcessor"/>
+                <setHeader headerName="CamelHttpMethod">
+                    <constant>POST</constant>
+                </setHeader>
+                <setHeader headerName="Content-Type">
+                    <constant>application/json</constant>
+                </setHeader>
+                <setHeader headerName="Authorization">
+                    <constant>Basic dG9tYXMuYmFobmlrQGFldmkuY3o6SHJkeUJ1ZHplc3h4eCEx</constant>
+                </setHeader>
+                <to uri="https://aevi-tools.atlassian.net/rest/api/2/issue"/>
             </aggregate>
         </route>
 

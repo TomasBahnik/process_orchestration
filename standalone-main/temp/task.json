@@ -1,12 +1,1 @@
-{
-  "fields": {
-    "project": {
-      "key": "NITRADEMO"
-    },
-    "summary": "Lorem ipsum",
-    "description": "${Description}",
-    "issuetype": {
-      "name": "Task"
-    }
-  }
-}
+{"fields":{"project":{"key": "NITRADEMO"},"summary": "Lorem ipsum","description": "${Description}","issuetype": {"name": "Task"}}}

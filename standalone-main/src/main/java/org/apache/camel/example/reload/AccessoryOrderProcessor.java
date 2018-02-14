@@ -9,15 +9,20 @@ public class AccessoryOrderProcessor implements Processor {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AccessoryOrderProcessor.class);
     private int paperPerTrx;
+    private static final String DESCRIPTION = "${Description}";
+
+    private static final String JIRA_TASK_TEMP =
+            "{\"fields\":{\"project\":{\"key\": \"NITRADEMO\"},\"summary\": \"Lorem ipsum\",\"description\": \"${Description}\",\"issuetype\": {\"name\": \"Task\"}}}";
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        Integer numOfTrx = exchange.getIn().getBody(Integer.class);
-        LOGGER.info("Received in message with {} trx, paper per trx {}", numOfTrx, paperPerTrx);
-        //System.out.printf("Processor %s received in message with %d trx, paper per trx %d%n", this.getClass().getCanonicalName(), numOfTrx, paperPerTrx);
-        int paperConsumed = numOfTrx * paperPerTrx;
-        LOGGER.info("Paper consumed {}", paperConsumed);
-        //System.out.printf("Processor %s : Paper consumed %d%n", this.getClass().getCanonicalName(), paperConsumed);
+        String inBody = exchange.getIn().getBody(String.class);
+        LOGGER.info("Received in message : {}", inBody);
+        //int paperConsumed = numOfTrx * paperPerTrx;
+        //LOGGER.info("Paper consumed {}", paperConsumed);
+        String taskJson = JIRA_TASK_TEMP.replace(DESCRIPTION, "terminalsExceedingGap : " + inBody);
+        LOGGER.info("JIRA Task JSON {}", taskJson);
+        exchange.getIn().setBody(taskJson);
     }
 
     public int getPaperPerTrx() {

@@ -46,7 +46,7 @@ public class CsvProcessor implements Processor {
             LOGGER.info("TerminalID {}: Usage {} MB", terminalId, expectedDataUsage.get(terminalId));
         }
         Set<String> terminalsExceedingGap = TrendAnomaly.getTerminalsExceedingGap(terminalsSet, MAX_GAP_IN_SECONDS, DATE, FROM, TO, csvTransactions);
-        exchange.getIn().setBody(terminalsExceedingGap.size());
+        exchange.getIn().setBody(terminalsExceedingGap.toString());
     }
 
     public int getLimit() {
