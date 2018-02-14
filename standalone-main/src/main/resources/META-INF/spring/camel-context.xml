@@ -54,7 +54,6 @@
         <!-- https://ecosystem.atlassian.net/wiki/spaces/JRJC/pages/27164680/Tutorial -->
         <route id="jira">
             <from uri="file:jira"/>
-            <process ref="jiraProcessor"/>
             <setHeader headerName="CamelHttpMethod">
                 <constant>POST</constant>
             </setHeader>
@@ -103,7 +102,7 @@
                     <constant>aggregated message</constant>
                 </setHeader>
                 <process ref="csvProcessor"/>
-                <process ref="accessoryOrderProcessor"/>
+                <process ref="jiraProcessor"/>
                 <setHeader headerName="CamelHttpMethod">
                     <constant>POST</constant>
                 </setHeader>
