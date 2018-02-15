@@ -2,17 +2,16 @@
 
 ### How To
 
-   * `nitra-camel.properties` contains configuration for both routes and beans
+   * `nitra-camel.properties` contains configuration for both routes and beans (incl. JIRA credentials)
    * run : `java -jar standalone-main-2.20.2-jar-with-dependencies.jar`
    * config route watch directory : `camel.watch.directory` JVM property sets the directory where the routes can be modified or added
-   * `terminals.csv` and `transactions.csv` files are loaded from `data` directory
-   
-Directories are relative to working directory = where the jar is started 
-
-Routes are loaded initially from `standalone-main-2.20.2-jar-with-dependencies.jar\META-INF\spring`. There is directory `bar` and file 
-`camel-context.xml` which imports `bar/barContext.xml`. This illustrates that routes can be kept in separate files  
+   * `terminals.csv` and `transactions.csv` files (located in git `temp` directory) are loaded by `csv` rote from `data` directory 
+   when copied to this directory (directory names are relative to working directory = where the jar is started)
+   * Routes are initially loaded from `standalone-main-2.20.2-jar-with-dependencies.jar\META-INF\spring`. 
+   Note that there is directory `bar` and file `camel-context.xml` (in `standalone-main-2.20.2-jar-with-dependencies.jar\META-INF\spring`) 
+   which imports `bar/barContext.xml`. This illustrates that routes can be kept in separate files.
  
-Git `temp` directory contains files with data (`terminals.csv` and `transactions.csv`. `csv` route expects these files id `data` directory
+Git `temp` directory contains files with data (`terminals.csv` and `transactions.csv`. `csv` route expects these files in `data` directory
 - first the terminals and then transactions (the order is important). Processing of these two starts just after receiving
 the second file with transaction. Copy these two file in `data` directory. If you want to init new execution of the process copy files with
 another name (could be the same ones) do `data` directory
