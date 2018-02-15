@@ -19,6 +19,7 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
@@ -47,6 +48,7 @@
     <import resource="bar/barContext.xml"/>
 
     <camelContext id="camel_xml_dsl" xmlns="http://camel.apache.org/schema/spring">
+        <camel:propertyPlaceholder id="properties" location="classpath:nitra.properties"/>
 
         <routeContextRef ref="barContext"/>
 
@@ -61,7 +63,7 @@
                 <constant>application/json</constant>
             </setHeader>
             <setHeader headerName="Authorization">
-                <constant>Basic dG9tYXMuYmFobmlrQGFldmkuY3o6SHJkeUJ1ZHplc3h4eCEx</constant>
+                <constant>Basic {{basic.authorization}}</constant>
             </setHeader>
             <to uri="https://aevi-tools.atlassian.net/rest/api/2/issue"/>
             <log message="${body}"/>
@@ -110,10 +112,10 @@
                     <constant>application/json</constant>
                 </setHeader>
                 <setHeader headerName="Authorization">
-                    <constant>Basic dG9tYXMuYmFobmlrQGFldmkuY3o6SHJkeUJ1ZHplc3h4eCEx</constant>
+                    <constant>Basic {{basic.authorization}}</constant>
                 </setHeader>
                 <to uri="https://aevi-tools.atlassian.net/rest/api/2/issue"/>
-                <log message="${body}"/>
+                <log message="JIRA response : ${body}"/>
             </aggregate>
         </route>
 
