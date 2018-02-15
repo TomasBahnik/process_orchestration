@@ -48,7 +48,7 @@
     <import resource="bar/barContext.xml"/>
 
     <camelContext id="camel_xml_dsl" xmlns="http://camel.apache.org/schema/spring">
-        <camel:propertyPlaceholder id="properties" location="classpath:nitra.properties"/>
+        <camel:propertyPlaceholder id="properties" location="classpath:nitra-camel.properties"/>
 
         <routeContextRef ref="barContext"/>
 
@@ -65,31 +65,9 @@
             <setHeader headerName="Authorization">
                 <constant>Basic {{basic.authorization}}</constant>
             </setHeader>
-            <to uri="https://aevi-tools.atlassian.net/rest/api/2/issue"/>
+            <to uri="https4://aevi-tools.atlassian.net/rest/api/2/issue"/>
             <log message="${body}"/>
         </route>
-
-        <!--
-            <route id="timerFoo">
-              <from uri="timer:foo"/>
-              <to uri="direct:foo"/>
-              <log message="Foo said: ${body}"/>
-            </route>
-
-            <route id="timerBar">
-              <from uri="timer:bar"/>
-              <to uri="direct:bar"/>
-              <log message="Bar rika: ${body}"/>
-            </route>
-
-            <route id="foo">
-              <from uri="direct:foo"/>
-              <transform>
-                <constant>Hello Foo!</constant>
-              </transform>
-            </route>
-        -->
-
 
         <route id="csv">
             <from uri="file:data?noop=true"/>
@@ -114,7 +92,7 @@
                 <setHeader headerName="Authorization">
                     <constant>Basic {{basic.authorization}}</constant>
                 </setHeader>
-                <to uri="https://aevi-tools.atlassian.net/rest/api/2/issue"/>
+                <to uri="https4://aevi-tools.atlassian.net/rest/api/2/issue"/>
                 <log message="JIRA response : ${body}"/>
             </aggregate>
         </route>
