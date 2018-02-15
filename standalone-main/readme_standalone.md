@@ -2,7 +2,7 @@
 
 ### How To
 
-   * `nitra-camel.properties` contains `basic.authorization` property for Base64 encoded `username:password` - loaded when started
+   * `nitra-camel.properties` contains configuration for both routes and beans
    * run : `java -jar standalone-main-2.20.2-jar-with-dependencies.jar`
    * config route watch directory : `camel.watch.directory` JVM property sets the directory where the routes can be modified or added
    * `terminals.csv` and `transactions.csv` files are loaded from `data` directory
