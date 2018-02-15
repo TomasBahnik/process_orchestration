@@ -27,10 +27,20 @@
     <!-- notice Camel will only update the routes that has been changed, so you can edit either either route or both
          and save the file, and Camel will update only what is required -->
 
+    <!-- Properties are loaded from nitra-camel.properties both for beans and for camel routes by {{a.b.c}} -->
+    <bean id="propHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:nitra-camel.properties</value>
+            </list>
+        </property>
+    </bean>
+
+
     <bean id="csvProcessor" class="org.apache.camel.example.reload.CsvProcessor">
         <property name="limit" value="14"/>
-        <property name="date" value="2018-02-13"/>
-        <property name="maxGapInSeconds" value="3600"/>
+        <property name="date" value="${csvProcessor.date}"/>
+        <property name="maxGapInSeconds" value="${csvProcessor.maxGapInSeconds}"/>
 
     </bean>
 
@@ -41,7 +51,7 @@
     <bean id="jiraProcessor" class="org.apache.camel.example.reload.JiraProcessor">
     </bean>
 
-    <!-- This is our aggregation strategy for the numbers received as input -->
+    <!-- This is our aggregation strategy for terminals and transactions -->
     <bean id="csvAggregationStrategy" class="org.apache.camel.example.reload.CsvAggregationStrategy"/>
 
 
@@ -63,7 +73,7 @@
                 <constant>application/json</constant>
             </setHeader>
             <setHeader headerName="Authorization">
-                <constant>Basic {{basic.authorization}}</constant>
+                <constant>Basic {{camel.basic.authorization}}</constant>
             </setHeader>
             <to uri="https4://aevi-tools.atlassian.net/rest/api/2/issue"/>
             <log message="${body}"/>
@@ -90,7 +100,7 @@
                     <constant>application/json</constant>
                 </setHeader>
                 <setHeader headerName="Authorization">
-                    <constant>Basic {{basic.authorization}}</constant>
+                    <constant>Basic {{camel.basic.authorization}}</constant>
                 </setHeader>
                 <to uri="https4://aevi-tools.atlassian.net/rest/api/2/issue"/>
                 <log message="JIRA response : ${body}"/>
