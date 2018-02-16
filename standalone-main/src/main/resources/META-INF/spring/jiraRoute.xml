@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+    ">
+    <routeContext id="jiraContext" xmlns="http://camel.apache.org/schema/spring">
+        <route id="jira">
+            <from uri="file:jira"/>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>POST</constant>
+            </setHeader>
+            <setHeader headerName="Content-Type">
+                <constant>application/json</constant>
+            </setHeader>
+            <to uri="https4://{{jira.host}}/rest/api/2/issue?authMethod=Basic&amp;authUsername={{jira.username}}&amp;authPassword={{jira.password}}&amp;authenticationPreemptive=true"/>
+            <log message="JIRA response : ${body}"/>
+        </route>
+    </routeContext>
+</beans>

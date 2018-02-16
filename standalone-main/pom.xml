@@ -60,6 +60,18 @@
 
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-http4</artifactId>
         </dependency>
 
@@ -129,7 +141,7 @@
                             <sourceRoot>${basedir}/target/generated/src/main/java</sourceRoot>
                             <wsdlOptions>
                                 <wsdlOption>
-                                    <wsdl>${basedir}/src/main/resources/jasper/Terminal.wsdl</wsdl>
+                                    <wsdl>${basedir}/src/main/resources/org/apache/camel/example/reload/Terminal.wsdl</wsdl>
                                 </wsdlOption>
                             </wsdlOptions>
                         </configuration>

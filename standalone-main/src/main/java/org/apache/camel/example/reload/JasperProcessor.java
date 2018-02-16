@@ -1,6 +1,9 @@
 package org.apache.camel.example.reload;
 
+import com.jasperwireless.api.ws.schema.GetTerminalDetailsRequest;
+import com.jasperwireless.api.ws.schema.GetTerminalDetailsResponse;
 import com.jasperwireless.api.ws.schema.TerminalPortType;
+import com.jasperwireless.api.ws.schema.TerminalType;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -14,7 +17,6 @@ import org.apache.ws.security.message.WSSecUsernameToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,21 +35,42 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 public class JasperProcessor implements Processor {
+
     private final static Logger LOGGER = LoggerFactory.getLogger(JasperProcessor.class);
 
     private String jasperWirelessAddress;
     private TerminalPortType proxy;
+    private String jasperLicenseKey;
 
-    public JasperProcessor(String jasperWirelessAddress) {
+    public JasperProcessor(String jasperWirelessAddress, String jasperUsername, String jasperPassword, String jasperLicenseKey) {
         this.jasperWirelessAddress = jasperWirelessAddress;
-        proxy = getProxy();
+        this.jasperLicenseKey = jasperLicenseKey;
+        proxy = jasperProxy(jasperUsername, jasperPassword);
     }
 
-    //com.aevi.nitra.core.connector.jasper.JasperConnector#getJasperService
-
     @Override
+    @SuppressWarnings("unchecked")
     public void process(Exchange exchange) throws Exception {
+        String request = exchange.getIn().getBody(String.class);
+        String[] data = request.trim().split(",");
+        String iccid = data[0];
 
+        LOGGER.info("Call Jasper service - get terminal detail for ICCID {}", iccid);
+
+        GetTerminalDetailsRequest terminalDetailsRequest = new GetTerminalDetailsRequest();
+        terminalDetailsRequest.setLicenseKey(jasperLicenseKey);
+
+        terminalDetailsRequest.setVersion("");
+        terminalDetailsRequest.setMessageId("");
+        GetTerminalDetailsRequest.Iccids iccids = new GetTerminalDetailsRequest.Iccids();
+        iccids.getIccid().add(iccid);
+        terminalDetailsRequest.setIccids(iccids);
+
+        GetTerminalDetailsResponse response = proxy.getTerminalDetails(terminalDetailsRequest);
+        List<TerminalType> terminals = response.getTerminals().getTerminal();
+
+        exchange.getOut().setBody(terminals);
+        exchange.getOut().setHeader("operationName", "getQuote");
     }
 
     private TerminalPortType getProxy() {
@@ -60,13 +83,15 @@ public class JasperProcessor implements Processor {
         return (TerminalPortType) proxyFactory.create();
     }
 
-    private TerminalPortType getJasperService()  {
-
-        // padalo to, ak to dotahujem online z
-        // http://kpn.jasperwireless.com/ws/schema/Terminal.wsdl
-        // tak WSDL berieme z resource, URL sluzby je stale to iste ako pre UAT
-        // aj pre PROD, takze nam to nevadi
-        URL url = this.getClass().getResource("/wsdl/jasper/Terminal_1.wsdl");
+    /**
+     * padalo to, ak to dotahujem online z
+     http://kpn.jasperwireless.com/ws/schema/Terminal.wsdl
+     tak WSDL berieme z resource, URL sluzby je stale to iste ako pre UAT
+     aj pre PROD, takze nam to nevadi
+     com.aevi.nitra.core.connector.jasper.JasperConnector#getJasperService
+     */
+    private TerminalPortType jasperProxy(String username, String password) {
+        URL url = JasperProcessor.class.getResource(jasperWirelessAddress);
         QName qname = new QName("http://api.jasperwireless.com/ws/schema", "TerminalService");
         Service service = Service.create(url, qname);
         TerminalPortType port = service.getPort(TerminalPortType.class);
@@ -78,7 +103,6 @@ public class JasperProcessor implements Processor {
             @Override
             public boolean handleMessage(SOAPMessageContext context) {
                 Boolean outboundProperty = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-
                 if (outboundProperty) {
                     try {
                         SOAPMessage message = context.getMessage();
@@ -87,9 +111,8 @@ public class JasperProcessor implements Processor {
                         WSSecHeader header = new WSSecHeader();
                         header.insertSecurityHeader(soapPart);
                         builder.setPasswordType(WSConstants.PASSWORD_TEXT);
-                        builder.setUserInfo("jasper.username","jasper.password");
+                        builder.setUserInfo(username, password);
                         builder.build(soapPart, header);
-
                         message.saveChanges();
                     } catch (WSSecurityException | SOAPException e) {
                         LOGGER.error("Jasper add security header error.", e);

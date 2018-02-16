@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+    ">
+
+    <!-- this is an included XML file where we only the the routeContext -->
+    <routeContext id="csvContext" xmlns="http://camel.apache.org/schema/spring">
+        <route id="csv">
+            <from uri="file:data?noop=true"/>
+            <!-- aggregate the input, use eagerCheckCompletion to let the completionPredicate easily detect the STOP command -->
+            <aggregate strategyRef="csvAggregationStrategy" completionSize="2">
+                <!-- aggregate all messages into the same group -->
+                <correlationExpression>
+                    <constant>true</constant>
+                </correlationExpression>
+                <!-- if end user enters STOP then complete the aggregation -->
+                <setHeader headerName="subject">
+                    <constant>aggregated message</constant>
+                </setHeader>
+                <process ref="csvProcessor"/>
+                <process ref="jiraProcessor"/>
+                <setHeader headerName="CamelHttpMethod">
+                    <constant>POST</constant>
+                </setHeader>
+                <setHeader headerName="Content-Type">
+                    <constant>application/json</constant>
+                </setHeader>
+                <to uri="https4://{{jira.host}}/rest/api/2/issue?authMethod=Basic&amp;authUsername={{jira.username}}&amp;authPassword={{jira.password}}&amp;authenticationPreemptive=true"/>
+                <log message="JIRA response : ${body}"/>
+            </aggregate>
+        </route>
+    </routeContext>
+
+</beans>

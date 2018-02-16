@@ -50,54 +50,27 @@
     <bean id="jiraProcessor" class="org.apache.camel.example.reload.JiraProcessor">
     </bean>
 
+    <!-- processor to retrive data from Jasper -->
+    <bean id="jasperProcessor" class="org.apache.camel.example.reload.JasperProcessor">
+        <constructor-arg index="0" value="${jasper.url}"/>
+        <constructor-arg index="1" value="${jasper.username}"/>
+        <constructor-arg index="2" value="${jasper.password}"/>
+        <constructor-arg index="3" value="${jasper.license.key}"/>
+    </bean>
+
     <!-- This is our aggregation strategy for terminals and transactions -->
     <bean id="csvAggregationStrategy" class="org.apache.camel.example.reload.CsvAggregationStrategy"/>
 
 
-    <import resource="bar/barContext.xml"/>
+    <import resource="jasperRoute.xml"/>
+    <import resource="jiraRoute.xml"/>
+    <import resource="csvRoute.xml"/>
 
     <camelContext id="camel_xml_dsl" xmlns="http://camel.apache.org/schema/spring">
         <propertyPlaceholder id="properties" location="classpath:nitra-camel.properties"/>
-
-        <routeContextRef ref="barContext"/>
-
-        <route id="jira">
-            <from uri="file:jira"/>
-            <setHeader headerName="CamelHttpMethod">
-                <constant>POST</constant>
-            </setHeader>
-            <setHeader headerName="Content-Type">
-                <constant>application/json</constant>
-            </setHeader>
-            <to uri="https4://{{jira.host}}/rest/api/2/issue?authMethod=Basic&amp;authUsername={{jira.username}}&amp;authPassword={{jira.password}}&amp;authenticationPreemptive=true"/>
-            <log message="JIRA response : ${body}"/>
-        </route>
-
-        <route id="csv">
-            <from uri="file:data?noop=true"/>
-            <!-- aggregate the input, use eagerCheckCompletion to let the completionPredicate easily detect the STOP command -->
-            <aggregate strategyRef="csvAggregationStrategy" completionSize="2">
-                <!-- aggregate all messages into the same group -->
-                <correlationExpression>
-                    <constant>true</constant>
-                </correlationExpression>
-                <!-- if end user enters STOP then complete the aggregation -->
-                <setHeader headerName="subject">
-                    <constant>aggregated message</constant>
-                </setHeader>
-                <process ref="csvProcessor"/>
-                <process ref="jiraProcessor"/>
-                <setHeader headerName="CamelHttpMethod">
-                    <constant>POST</constant>
-                </setHeader>
-                <setHeader headerName="Content-Type">
-                    <constant>application/json</constant>
-                </setHeader>
-                <to uri="https4://{{jira.host}}/rest/api/2/issue?authMethod=Basic&amp;authUsername={{jira.username}}&amp;authPassword={{jira.password}}&amp;authenticationPreemptive=true"/>
-                <log message="JIRA response : ${body}"/>
-            </aggregate>
-        </route>
-
+        <routeContextRef ref="jasperContext"/>
+        <routeContextRef ref="jiraContext"/>
+        <routeContextRef ref="csvContext"/>
     </camelContext>
 
 </beans>
