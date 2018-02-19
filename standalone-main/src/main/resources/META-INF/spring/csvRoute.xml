@@ -10,16 +10,19 @@
     <routeContext id="csvContext" xmlns="http://camel.apache.org/schema/spring">
         <route id="csv">
             <from uri="file:data?noop=true"/>
-            <!-- aggregate the input, use eagerCheckCompletion to let the completionPredicate easily detect the STOP command -->
+            <!-- aggregate the input, wait for 2 messages -->
             <aggregate strategyRef="csvAggregationStrategy" completionSize="2">
                 <!-- aggregate all messages into the same group -->
                 <correlationExpression>
                     <constant>true</constant>
                 </correlationExpression>
-                <!-- if end user enters STOP then complete the aggregation -->
-                <setHeader headerName="subject">
-                    <constant>aggregated message</constant>
-                </setHeader>
+                <!-- set properties for CSV processing. If not set values from nitra-camel.properties are used (camel-context.xml) -->
+                <setProperty propertyName="csvProcessor.maxGapInSeconds">
+                    <constant>2400</constant>
+                </setProperty>
+                <setProperty propertyName="csvProcessor.transactionDate">
+                    <constant>2018-02-13</constant>
+                </setProperty>
                 <process ref="csvProcessor"/>
                 <process ref="jiraProcessor"/>
                 <setHeader headerName="CamelHttpMethod">

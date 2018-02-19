@@ -11,6 +11,7 @@
         <route id="jasper">
             <from uri="file:jasper"/>
             <process ref="jasperProcessor"/>
+            <log message="Jasper response : ${body}"/>
         </route>
     </routeContext>
 

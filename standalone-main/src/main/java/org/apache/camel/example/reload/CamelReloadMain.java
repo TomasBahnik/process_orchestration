@@ -19,7 +19,7 @@ import org.apache.camel.spring.Main;
 public final class CamelReloadMain {
 
     private static final String SPRING_CAMEL_CONTEXT_XML = "META-INF/spring/camel-context.xml";
-    private static final String WATCH_DIRECTORY = "src/main/resources/META-INF/spring";
+    private static final String WATCH_DIRECTORY = "routes";
     private static final String SPRING_CAMEL_CONTEXT_XML_KEY = "camel.context";
     private static final String WATCH_DIRECTORY_KEY = "camel.watch.directory";
 

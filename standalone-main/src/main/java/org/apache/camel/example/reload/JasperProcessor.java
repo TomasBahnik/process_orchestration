@@ -52,10 +52,8 @@ public class JasperProcessor implements Processor {
     @SuppressWarnings("unchecked")
     public void process(Exchange exchange) throws Exception {
         String request = exchange.getIn().getBody(String.class);
-        String[] data = request.trim().split(",");
-        String iccid = data[0];
-
-        LOGGER.info("Call Jasper service - get terminal detail for ICCID {}", iccid);
+        String[] iccIds = request.trim().split(",");
+        LOGGER.info("Call Jasper service - get terminal detail for ICCID {}", iccIds);
 
         GetTerminalDetailsRequest terminalDetailsRequest = new GetTerminalDetailsRequest();
         terminalDetailsRequest.setLicenseKey(jasperLicenseKey);
@@ -63,7 +61,9 @@ public class JasperProcessor implements Processor {
         terminalDetailsRequest.setVersion("");
         terminalDetailsRequest.setMessageId("");
         GetTerminalDetailsRequest.Iccids iccids = new GetTerminalDetailsRequest.Iccids();
-        iccids.getIccid().add(iccid);
+        for (String iccid : iccIds) {
+            iccids.getIccid().add(iccid);
+        }
         terminalDetailsRequest.setIccids(iccids);
 
         GetTerminalDetailsResponse response = proxy.getTerminalDetails(terminalDetailsRequest);
@@ -84,14 +84,12 @@ public class JasperProcessor implements Processor {
     }
 
     /**
-     * padalo to, ak to dotahujem online z
-     http://kpn.jasperwireless.com/ws/schema/Terminal.wsdl
-     tak WSDL berieme z resource, URL sluzby je stale to iste ako pre UAT
-     aj pre PROD, takze nam to nevadi
-     com.aevi.nitra.core.connector.jasper.JasperConnector#getJasperService
+     * WSDL and XSD loaded from  http://kpn.jasperwireless.com/ws/schema/Terminal.wsdl This URL does not provide WSDL over HTTP, just stores
+     * it
      */
     private TerminalPortType jasperProxy(String username, String password) {
         URL url = JasperProcessor.class.getResource(jasperWirelessAddress);
+        LOGGER.info("Jasper url : {} jasper address {}", url, jasperWirelessAddress);
         QName qname = new QName("http://api.jasperwireless.com/ws/schema", "TerminalService");
         Service service = Service.create(url, qname);
         TerminalPortType port = service.getPort(TerminalPortType.class);

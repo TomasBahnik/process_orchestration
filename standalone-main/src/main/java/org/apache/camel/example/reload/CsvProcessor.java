@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 import java.util.Set;
 
 public class CsvProcessor implements Processor {
@@ -24,6 +23,8 @@ public class CsvProcessor implements Processor {
     static final int MAX_GAP_IN_SECONDS = 3600;
     static final LocalTime FROM = LocalTime.of(8, 0);
     static final LocalTime TO = LocalTime.of(16, 0);
+    static final String CSV_PROCESSOR_TRANSACTION_DATE = "csvProcessor.transactionDate";
+    static final String CSV_PROCESSOR_MAX_GAP_IN_SECONDS = "csvProcessor.maxGapInSeconds";
     private int limit;
     private int maxGapInSeconds;
     private String date;
@@ -31,6 +32,12 @@ public class CsvProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
         String inBody = exchange.getIn().getBody(String.class);
+        maxGapInSeconds = exchange.getProperty(CSV_PROCESSOR_MAX_GAP_IN_SECONDS, maxGapInSeconds, Integer.class);
+        date = exchange.getProperty(CSV_PROCESSOR_TRANSACTION_DATE, date, String.class);
+        LocalDate transactionDate = LocalDate
+                .parse(date, DateTimeFormatter.ofPattern(REQUEST_DATE_PATTERN).withZone(
+                        ZoneId.of(TRANSACTION_TIMEZONE)));
+        LOGGER.info("maxGapInSeconds = {}, transactionDate = {}", maxGapInSeconds, transactionDate);
         String[] terminalsAndTransactions = inBody.split(CsvAggregationStrategy.DELIMITER);
         if (terminalsAndTransactions.length != 2) {
             LOGGER.error("Received in message MUST contain exactly 2 elements but contains {}", terminalsAndTransactions.length);
@@ -53,11 +60,10 @@ public class CsvProcessor implements Processor {
             LOGGER.info("TerminalID {}: Usage {} MB", terminalId, expectedDataUsage.get(terminalId));
         }
 */
-        LocalDate transactionDate = LocalDate
-                .parse(date, DateTimeFormatter.ofPattern(REQUEST_DATE_PATTERN).withZone(
-                        ZoneId.of(TRANSACTION_TIMEZONE)));
 
         Set<String> terminalsExceedingGap = TrendAnomaly.getTerminalsExceedingGap(terminalsSet, maxGapInSeconds, transactionDate, FROM, TO, csvTransactions);
+        exchange.setProperty(CSV_PROCESSOR_MAX_GAP_IN_SECONDS, maxGapInSeconds);
+        exchange.setProperty(CSV_PROCESSOR_TRANSACTION_DATE, date);
         exchange.getIn().setBody(terminalsExceedingGap.toString());
     }
 

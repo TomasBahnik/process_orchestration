@@ -23,8 +23,7 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-    <!-- notice Camel will only update the routes that has been changed, so you can edit either either route or both
-         and save the file, and Camel will update only what is required -->
+    <!-- notice Camel will only update the routes that has been changed -->
 
     <!-- Properties are loaded from nitra-camel.properties both for beans and for camel routes by {{a.b.c}} -->
     <bean id="propHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -38,7 +37,7 @@
 
     <bean id="csvProcessor" class="org.apache.camel.example.reload.CsvProcessor">
         <property name="limit" value="14"/>
-        <property name="date" value="${csvProcessor.date}"/>
+        <property name="date" value="${csvProcessor.transactionDate}"/>
         <property name="maxGapInSeconds" value="${csvProcessor.maxGapInSeconds}"/>
 
     </bean>
