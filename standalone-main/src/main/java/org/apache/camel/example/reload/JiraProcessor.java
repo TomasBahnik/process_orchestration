@@ -21,10 +21,10 @@ public class JiraProcessor implements Processor {
         String inBody = exchange.getIn().getBody(String.class);
         int maxGapInSeconds = exchange.getProperty(CsvProcessor.CSV_PROCESSOR_MAX_GAP_IN_SECONDS, Integer.class);
         String transactionDate = exchange.getProperty(CsvProcessor.CSV_PROCESSOR_TRANSACTION_DATE, String.class);
-        LOGGER.info("maxGapInSeconds = {}, transactionDate = {}", maxGapInSeconds, transactionDate);
+        LOGGER.info("Max Gap = {} sec, Transaction Date = {}", maxGapInSeconds, transactionDate);
         LOGGER.info(TERMINALS_EXCEEDING_TRANSACTION_GAP + " : {}", inBody);
         String taskJson = JIRA_TASK_TEMP.replace(DESCRIPTION, TERMINALS_EXCEEDING_TRANSACTION_GAP +
-                "(max gap : " + maxGapInSeconds + "[sec], Transaction Date : " + transactionDate + ") "
+                "(Max Gap : " + maxGapInSeconds + "sec, Transaction Date : " + transactionDate + ") "
                 + inBody);
         LOGGER.info("Payload sent to JIRA {}", taskJson);
         exchange.getIn().setBody(taskJson);
