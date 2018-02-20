@@ -41,6 +41,13 @@ on Jasper endpoint for all `iccIds`.
    (defaults to `routes`) for subsequent editing
    * Start by `java -jar nitra-camel-2.20.2-standalone-with-dependencies.jar` without any CSV files copied
    
+The samples below illustrate change of processing parameter after route reload. In order to illustrate change of route it is safe to delete
+step which reports incident to JIRA 
+
+```
+<to uri="https4://{{jira.host}}/rest/api/2/issue?authMethod=Basic&amp;authUsername={{jira.username}}&amp;authPassword={{jira.password}}&amp;authenticationPreemptive=true"/>
+``` 
+   
 ```
 $ java -jar nitra-camel-2.20.2-standalone-with-dependencies.jar
 Camel context : META-INF/spring/camel-context.xml
