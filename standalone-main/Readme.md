@@ -37,9 +37,9 @@ on Jasper endpoint for each `iccId`.
 #### Sample Run
 
    * **set JIRA credentials** in `nitra-camel-2.20.2-standalone-with-dependencies.jar\nitra-camel.properties`
-   * copy `resources/META-INF/spring/dataUsageRoute.xml` and `resources/META-INF/spring/maxGapRoute.xml` to Camel watch directory 
-   (defaults to routes) fro subsequent editing
-   * Start by `java -jar nitra-camel-2.20.2-standalone-with-dependencies.jar` without any data
+   * copy `META-INF/spring/dataUsageRoute.xml` and `META-INF/spring/maxGapRoute.xml` (from jar) )to Camel watch directory 
+   (defaults to routes) for subsequent editing
+   * Start by `java -jar nitra-camel-2.20.2-standalone-with-dependencies.jar` without any CSV files copied
    
 ```
 $ java -jar nitra-camel-2.20.2-standalone-with-dependencies.jar
