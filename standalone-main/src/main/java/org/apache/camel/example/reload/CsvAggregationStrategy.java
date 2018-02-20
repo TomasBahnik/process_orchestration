@@ -22,8 +22,10 @@ public class CsvAggregationStrategy implements AggregationStrategy {
         int aggregatedSize = Integer.valueOf(oldExchange.getProperty(Exchange.AGGREGATED_SIZE).toString());
         LOGGER.debug("newExchange input {}, CamelAggregatedSize {}", input, aggregatedSize );
 
+/*
         if (aggregatedSize > 1 || input.contains(STOP))
             return oldExchange;
+*/
 
         String terminals = oldExchange.getIn().getBody(String.class);
         String transactions = newExchange.getIn().getBody(String.class);

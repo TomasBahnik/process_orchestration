@@ -35,10 +35,14 @@
     </bean>
 
 
-    <bean id="csvProcessor" class="org.apache.camel.example.reload.CsvProcessor">
-        <property name="limit" value="14"/>
-        <property name="date" value="${csvProcessor.transactionDate}"/>
-        <property name="maxGapInSeconds" value="${csvProcessor.maxGapInSeconds}"/>
+    <bean id="maxGapProcessor" class="org.apache.camel.example.reload.MaxGapProcessor">
+        <property name="date" value="${maxGapProcessor.transactionDate}"/>
+        <property name="maxGapInSeconds" value="${maxGapProcessor.maxGapInSeconds}"/>
+
+    </bean>
+
+    <bean id="dataUsageProcessor" class="org.apache.camel.example.reload.DataUsageProcessor">
+        <property name="bytesPerTransaction" value="${dataUsage.bytesPerTransaction}"/>
 
     </bean>
 
@@ -63,13 +67,15 @@
 
     <import resource="jasperRoute.xml"/>
     <import resource="jiraRoute.xml"/>
-    <import resource="csvRoute.xml"/>
+    <import resource="maxGapRoute.xml"/>
+    <import resource="dataUsageRoute.xml"/>
 
     <camelContext id="camel_xml_dsl" xmlns="http://camel.apache.org/schema/spring">
         <propertyPlaceholder id="properties" location="classpath:nitra-camel.properties"/>
         <routeContextRef ref="jasperContext"/>
         <routeContextRef ref="jiraContext"/>
-        <routeContextRef ref="csvContext"/>
+        <routeContextRef ref="maxGapContext"/>
+        <routeContextRef ref="dataUsageContext"/>
     </camelContext>
 
 </beans>

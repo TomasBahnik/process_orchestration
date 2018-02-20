@@ -7,9 +7,9 @@
     ">
 
     <!-- this is an included XML file where we only the the routeContext -->
-    <routeContext id="csvContext" xmlns="http://camel.apache.org/schema/spring">
-        <route id="csv">
-            <from uri="file:data?noop=true"/>
+    <routeContext id="maxGapContext" xmlns="http://camel.apache.org/schema/spring">
+        <route id="maxGapRoute">
+            <from uri="file:data-maxGap?noop=true"/>
             <!-- aggregate the input, wait for 2 messages -->
             <aggregate strategyRef="csvAggregationStrategy" completionSize="2">
                 <!-- aggregate all messages into the same group -->
@@ -17,13 +17,13 @@
                     <constant>true</constant>
                 </correlationExpression>
                 <!-- set properties for CSV processing. If not set values from nitra-camel.properties are used (camel-context.xml) -->
-                <setProperty propertyName="csvProcessor.maxGapInSeconds">
+                <setProperty propertyName="maxGapProcessor.maxGapInSeconds">
                     <constant>2400</constant>
                 </setProperty>
-                <setProperty propertyName="csvProcessor.transactionDate">
+                <setProperty propertyName="maxGapProcessor.transactionDate">
                     <constant>2018-02-13</constant>
                 </setProperty>
-                <process ref="csvProcessor"/>
+                <process ref="maxGapProcessor"/>
                 <process ref="jiraProcessor"/>
                 <setHeader headerName="CamelHttpMethod">
                     <constant>POST</constant>

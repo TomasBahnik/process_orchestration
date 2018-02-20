@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public class TrendAnomaly {
 
-    static final LocalDate DATE = LocalDate.of(2018, 2, 13);
+    private static final LocalDate DATE = LocalDate.of(2018, 2, 13);
     private final static Logger LOGGER = LoggerFactory.getLogger(TrendAnomaly.class);
 
     private static final String TRANSACTION_PATH = "C:\\Users\\moro\\git\\TomasBahnik\\process_orchestration\\standalone-main\\temp\\transactions.csv";
@@ -37,7 +37,7 @@ public class TrendAnomaly {
     static final String TRANSACTION_TIMEZONE = "Europe/Prague";
 
     public static void main(String[] args) throws Exception {
-        Set<String> exceedingTerminals = getTerminalsExceedingGap(getTerminalsFromNitra(), CsvProcessor.MAX_GAP_IN_SECONDS, DATE, CsvProcessor.FROM, CsvProcessor.TO,
+        Set<String> exceedingTerminals = getTerminalsExceedingGap(getTerminalsFromNitra(), MaxGapProcessor.MAX_GAP_IN_SECONDS, DATE, MaxGapProcessor.FROM, MaxGapProcessor.TO,
                 TRANSACTION_PATH);
         System.out.println(exceedingTerminals);
     }

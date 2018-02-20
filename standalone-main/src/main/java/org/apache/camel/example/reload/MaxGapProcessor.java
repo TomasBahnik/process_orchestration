@@ -15,25 +15,24 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
-public class CsvProcessor implements Processor {
+public class MaxGapProcessor implements Processor {
 
-    private static final int REQUEST_TIME = 15;
-    private static final int REQUEST_TYPE = 2;
-    private final static Logger LOGGER = LoggerFactory.getLogger(CsvProcessor.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MaxGapProcessor.class);
     static final int MAX_GAP_IN_SECONDS = 3600;
     static final LocalTime FROM = LocalTime.of(8, 0);
     static final LocalTime TO = LocalTime.of(16, 0);
-    static final String CSV_PROCESSOR_TRANSACTION_DATE = "csvProcessor.transactionDate";
-    static final String CSV_PROCESSOR_MAX_GAP_IN_SECONDS = "csvProcessor.maxGapInSeconds";
-    private int limit;
+    static final String MAX_GAP_PROCESSOR_TRANSACTION_DATE = "maxGapProcessor.transactionDate";
+    static final String MAX_GAP_PROCESSOR_MAX_GAP_IN_SECONDS = "maxGapProcessor.maxGapInSeconds";
+    static final String OPERATION_NAME = "operationName";
+    static final String MAX_GAP_OPERATION = "maxGap";
     private int maxGapInSeconds;
     private String date;
 
     @Override
     public void process(Exchange exchange) throws Exception {
         String inBody = exchange.getIn().getBody(String.class);
-        maxGapInSeconds = exchange.getProperty(CSV_PROCESSOR_MAX_GAP_IN_SECONDS, maxGapInSeconds, Integer.class);
-        date = exchange.getProperty(CSV_PROCESSOR_TRANSACTION_DATE, date, String.class);
+        maxGapInSeconds = exchange.getProperty(MAX_GAP_PROCESSOR_MAX_GAP_IN_SECONDS, maxGapInSeconds, Integer.class);
+        date = exchange.getProperty(MAX_GAP_PROCESSOR_TRANSACTION_DATE, date, String.class);
         LocalDate transactionDate = LocalDate
                 .parse(date, DateTimeFormatter.ofPattern(REQUEST_DATE_PATTERN).withZone(
                         ZoneId.of(TRANSACTION_TIMEZONE)));
@@ -62,17 +61,10 @@ public class CsvProcessor implements Processor {
 */
 
         Set<String> terminalsExceedingGap = TrendAnomaly.getTerminalsExceedingGap(terminalsSet, maxGapInSeconds, transactionDate, FROM, TO, csvTransactions);
-        exchange.setProperty(CSV_PROCESSOR_MAX_GAP_IN_SECONDS, maxGapInSeconds);
-        exchange.setProperty(CSV_PROCESSOR_TRANSACTION_DATE, date);
+        exchange.setProperty(MAX_GAP_PROCESSOR_MAX_GAP_IN_SECONDS, maxGapInSeconds);
+        exchange.setProperty(MAX_GAP_PROCESSOR_TRANSACTION_DATE, date);
+        exchange.setProperty(OPERATION_NAME, MAX_GAP_OPERATION);
         exchange.getIn().setBody(terminalsExceedingGap.toString());
-    }
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        this.limit = limit;
     }
 
     public int getMaxGapInSeconds() {

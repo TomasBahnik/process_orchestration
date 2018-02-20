@@ -91,6 +91,19 @@ public class ExpectedTerminalDataUsage {
         return terminals;
     }
 
+    static Map<String, Integer> getTerminalsDataUsage(CSVParser csvTerminals) {
+        Map<String, Integer> result = new HashMap<>();
+        int count = 0;
+        for (CSVRecord terminal : csvTerminals) {
+            count++;
+            String terminalId = terminal.get(0);
+            Integer dataUsage = Integer.valueOf(terminal.get(1));
+            result.put(terminalId, dataUsage);
+        }
+        LOGGER.info("Terminals with data usage count = {}", count);
+        return result;
+    }
+
     private static Map<String, Integer> getTransactionCount(Set<String> terminals, LocalDateTime from,
                                                             String csvTransactionPath) throws Exception {
         FileInputStream inputStream = new FileInputStream(csvTransactionPath);
