@@ -9,7 +9,7 @@ Directory names below are relative to the working directory = directory where th
    (copy them in this order!)  in `data-usage` directory. Processing starts after 3rd file is copied.
    * `resources/META-INF/spring/maxGapRoute.xml` expects `terminals.csv` and `transactions.csv`  (copy them in this order!)  in `data-maxGap` directory
    Processing starts after 2nd file is copied.  
-   * **delete** these files before changing these routes othewise the order can be broken  
+   * **delete** these files before changing these routes otherwise the order can be broken  
    * `resources/nitra-camel.properties` contains configuration for both routes and beans (credentials to JIRA are empty)
    * route watch directory : `camel.watch.directory` JVM property sets the directory where the routes can be modified or added. 
    When route definition in this directory is changed the route is reloaded. 
@@ -38,7 +38,7 @@ on Jasper endpoint for each `iccId`.
 
    * **set JIRA credentials** in `nitra-camel-2.20.2-standalone-with-dependencies.jar\nitra-camel.properties`
    * copy `META-INF/spring/dataUsageRoute.xml` and `META-INF/spring/maxGapRoute.xml` (from jar) )to Camel watch directory 
-   (defaults to routes) for subsequent editing
+   (defaults to `routes`) for subsequent editing
    * Start by `java -jar nitra-camel-2.20.2-standalone-with-dependencies.jar` without any CSV files copied
    
 ```
@@ -151,23 +151,14 @@ INFO: Starting beans in phase 2147483646
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  Terminals with data usage count = 10
 [ thread #2 - file://data-usage] ExpectedTerminalDataUsage      INFO  Transactions count = 18780
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  TerminalID SCS01T01: Expected/Real Usage  50000/50000 MB
-[ thread #2 - file://data-usage] DataUsageProcessor             INFO  No terminals with exceeded usage
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  TerminalID SCS00T01: Expected/Real Usage  55000/45000 MB
-[ thread #2 - file://data-usage] DataUsageProcessor             INFO  No terminals with exceeded usage
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  TerminalID SCS00T02: Expected/Real Usage  55000/44000 MB
-[ thread #2 - file://data-usage] DataUsageProcessor             INFO  No terminals with exceeded usage
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  TerminalID FM02T02: Expected/Real Usage  42500/34000 MB
-[ thread #2 - file://data-usage] DataUsageProcessor             INFO  No terminals with exceeded usage
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  TerminalID FM01T01: Expected/Real Usage  50000/40000 MB
-[ thread #2 - file://data-usage] DataUsageProcessor             INFO  No terminals with exceeded usage
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  TerminalID CH00T01: Expected/Real Usage  92500/74000 MB
-[ thread #2 - file://data-usage] DataUsageProcessor             INFO  No terminals with exceeded usage
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  TerminalID CH01T02: Expected/Real Usage  45000/36000 MB
-[ thread #2 - file://data-usage] DataUsageProcessor             INFO  No terminals with exceeded usage
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  TerminalID CH01T03: Expected/Real Usage  30000/24000 MB
-[ thread #2 - file://data-usage] DataUsageProcessor             INFO  No terminals with exceeded usage
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  TerminalID PB01T01: Expected/Real Usage  87500/70000 MB
-[ thread #2 - file://data-usage] DataUsageProcessor             INFO  No terminals with exceeded usage
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  TerminalID PB01T02: Expected/Real Usage  52500/42000 MB
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  No terminals with exceeded usage
 [ thread #2 - file://data-usage] JiraProcessor                  INFO  Terminals data usage :

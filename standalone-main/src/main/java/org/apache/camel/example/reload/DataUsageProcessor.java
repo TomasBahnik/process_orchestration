@@ -53,15 +53,14 @@ public class DataUsageProcessor implements Processor {
                 exceeded++;
                 body.append(String.format("%s:expected/real %d/%d MB,", terminalId, expectedDataUsage, realDataUsage));
             }
-            exchange.setProperty(MaxGapProcessor.OPERATION_NAME, DATA_USAGE_OPERATION);
-            if (exceeded > 0) {
-                exchange.getIn().setHeader("sendToJira", exceeded);
-            }
-            else {
-                LOGGER.info("No terminals with exceeded usage");
-            }
-            exchange.getIn().setBody(body.toString());
         }
+        exchange.setProperty(MaxGapProcessor.OPERATION_NAME, DATA_USAGE_OPERATION);
+        if (exceeded > 0) {
+            exchange.getIn().setHeader("sendToJira", exceeded);
+        } else {
+            LOGGER.info("No terminals with exceeded usage");
+        }
+        exchange.getIn().setBody(body.toString());
     }
 
     public int getBytesPerTransaction() {
