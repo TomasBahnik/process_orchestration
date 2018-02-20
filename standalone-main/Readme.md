@@ -36,6 +36,8 @@ on Jasper endpoint for each `iccId`.
  
 #### Sample Run
 
+   * copy `resources/META-INF/spring/dataUsageRoute.xml` and `resources/META-INF/spring/maxGapRoute.xml` to Camel watch directory 
+   (defaults to routes) fro subsequent editing
    * Start by `java -jar nitra-camel-2.20.2-standalone-with-dependencies.jar` without any data
    
 ```
