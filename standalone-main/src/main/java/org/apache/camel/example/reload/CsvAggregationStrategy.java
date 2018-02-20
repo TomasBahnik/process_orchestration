@@ -13,17 +13,14 @@ public class CsvAggregationStrategy implements AggregationStrategy {
 
     @Override
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
+        String input = newExchange.getIn().getBody(String.class);
+        LOGGER.info("new input : size = {}", input.length());
         if (oldExchange == null) {
-            LOGGER.debug("new exchange {}, new exchange aggregated size {}, message count {}", newExchange,
-                    newExchange, newExchange.getProperty(Exchange.AGGREGATED_SIZE));
             return newExchange;
         }
-        String input = newExchange.getIn().getBody(String.class);
-        int aggregatedSize = Integer.valueOf(oldExchange.getProperty(Exchange.AGGREGATED_SIZE).toString());
-        LOGGER.debug("newExchange input {}, CamelAggregatedSize {}", input, aggregatedSize );
 
 /*
-        if (aggregatedSize > 1 || input.contains(STOP))
+        if (input.contains(STOP))
             return oldExchange;
 */
 
