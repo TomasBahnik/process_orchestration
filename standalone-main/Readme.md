@@ -6,9 +6,9 @@ Directory names below are relative to the working directory = directory where th
 
    * Git `temp` directory contains files with data (`terminals.csv` `terminal-data-usage.csv` and `transactions.csv`. 
    * route `resources/META-INF/spring/dataUsageRoute.xml` expects `terminals.csv` `terminal-data-usage.csv` and `transactions.csv` 
-   (in this order!)  in `data-usage` directory. Processing starts after 3rd file.
-   * `resources/META-INF/spring/maxGapRoute.xml` expects `terminals.csv` and `transactions.csv`  (in this order!)  in `data-maxGap` directory
-   Processing starts after 2nd file.  
+   (copy them in this order!)  in `data-usage` directory. Processing starts after 3rd file is copied.
+   * `resources/META-INF/spring/maxGapRoute.xml` expects `terminals.csv` and `transactions.csv`  (copy them in this order!)  in `data-maxGap` directory
+   Processing starts after 2nd file is copied.  
    * **delete** these files before changing these routes othewise the order can be broken  
    * `resources/nitra-camel.properties` contains configuration for both routes and beans (credentials to JIRA are empty)
    * route watch directory : `camel.watch.directory` JVM property sets the directory where the routes can be modified or added. 
