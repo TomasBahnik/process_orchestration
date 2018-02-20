@@ -4,40 +4,40 @@
 
 Directory names below are relative to the working directory = directory where the jar is started. 
 
-   * Git `temp` directory contains files with data (`terminals.csv` `terminal-data-usage.csv` and `transactions.csv`. 
-   * route `resources/META-INF/spring/dataUsageRoute.xml` expects `terminals.csv` `terminal-data-usage.csv` and `transactions.csv` 
-   (copy them in this order!)  in `data-usage` directory. Processing starts after 3rd file is copied.
-   * `resources/META-INF/spring/maxGapRoute.xml` expects `terminals.csv` and `transactions.csv`  (copy them in this order!)  in `data-maxGap` directory
+   * Git `temp` directory contains files with data (`terminals.csv` `terminal-data-usage.csv` and `transactions.csv`). 
+   * route `/META-INF/spring/dataUsageRoute.xml` expects `terminals.csv` `terminal-data-usage.csv` and `transactions.csv` 
+   (copy them in this order!) in `data-usage` directory. Processing starts after 3rd file is copied.
+   * `/META-INF/spring/maxGapRoute.xml` expects `terminals.csv` and `transactions.csv`  (copy them in this order!)  in `data-maxGap` directory
    Processing starts after 2nd file is copied.  
-   * **delete** these files before changing these routes otherwise the order can be broken  
-   * `resources/nitra-camel.properties` contains configuration for both routes and beans (credentials to JIRA are empty)
-   * route watch directory : `camel.watch.directory` JVM property sets the directory where the routes can be modified or added. 
-   When route definition in this directory is changed the route is reloaded. 
+   * **delete** these files before changing these routes otherwise the order in which these files are loaded can be broken  
+   * `/nitra-camel.properties` contains configuration for both routes and beans (credentials to JIRA are empty)
+   * route watch directory : `camel.watch.directory` JVM property sets the directory where the routes can be modified or added.
+   When route definition in this directory is changed the route is reloaded.
       * run with default route watch directory (`routes`)  : `java -jar nitra-camel-2.20.2-standalone-with-dependencies.jar`
       * run with non default route watch directory : `java -Dcamel.watch.directory=your-routes-path -jar nitra-camel-2.20.2-standalone-with-dependencies.jar`
-   * Routes are initially loaded from `nitra-camel-2.20.2-standalone-with-dependencies.jar\META-INF\spring`. 
+   * Routes are initially loaded from `nitra-camel-2.20.2-standalone-with-dependencies.jar/META-INF/spring` by `camel-context.xml` spring context. 
 
 #### maxGapRoute
 
-`resources/META-INF/spring/maxGapRoute.xml` route filters terminals with transaction gap according to 
-`maxGapProcessor.maxGapInSeconds` and `maxGapProcessor.transactionDate` parameters. These parameters are set in `resources/nitra-camel.properties`
+`/META-INF/spring/maxGapRoute.xml` filters terminals with transaction gap according to 
+`maxGapProcessor.maxGapInSeconds` and `maxGapProcessor.transactionDate` parameters. These parameters are set in `nitra-camel.properties`
 or as exchange properties in the `maxGapRoute.xml` route. List of terminals with transaction gap is passed to JIRA 
 processor to create an incident.
 
 #### dataUsageRoute
 
-`resources/META-INF/spring/dataUsageRoute.xml` counts terminal data usage based on `dataUsage.bytesPerTransaction` parameter (`nitra-camel.properties` or 
-`dataUsageRoute.xml`) and sends terminals with real data usage higher than expected to JIRA as incident.
+`/META-INF/spring/dataUsageRoute.xml` counts terminal data usage based on `dataUsage.bytesPerTransaction` parameter (`nitra-camel.properties` or 
+`dataUsageRoute.xml`) and sends terminals with real data usage higher than expected one to JIRA as incident.
 
 #### jasperRoute
 
-`resources/META-INF/spring/jasperRoute.xml` waits for comma separated `iccIds` in `jasper` directory. Then it calls `getTerminalDetails` method
-on Jasper endpoint for each `iccId`. 
+`/META-INF/spring/jasperRoute.xml` waits for comma separated file with `iccIds` in `jasper` directory. Then it calls `getTerminalDetails` method
+on Jasper endpoint for all `iccIds`. 
  
 #### Sample Run
 
-   * **set JIRA credentials** in `nitra-camel-2.20.2-standalone-with-dependencies.jar\nitra-camel.properties`
-   * copy `META-INF/spring/dataUsageRoute.xml` and `META-INF/spring/maxGapRoute.xml` (from jar) )to Camel watch directory 
+   * **set JIRA credentials** in `nitra-camel-2.20.2-standalone-with-dependencies.jar\nitra-camel.properties` otherwise 401 is returned
+   * copy `META-INF/spring/dataUsageRoute.xml` and `META-INF/spring/maxGapRoute.xml` (from jar) ) to `camel.watch.directory` 
    (defaults to `routes`) for subsequent editing
    * Start by `java -jar nitra-camel-2.20.2-standalone-with-dependencies.jar` without any CSV files copied
    
@@ -84,7 +84,7 @@ INFO: Starting beans in phase 2147483646
 [                          main] FileWatcherReloadStrategy      INFO  Starting ReloadStrategy to watch directory: routes
 ```
 
-   * copy `terminal.csv` and `transactions.csv` CSV files to `data-maxGap` directory
+   * copy `terminal.csv` and then `transactions.csv` CSV files to `data-maxGap` directory
 
 ```
 [thread #3 - file://data-maxGap] MaxGapProcessor                INFO  maxGapInSeconds = 2400, transactionDate = 2018-02-13
@@ -98,7 +98,8 @@ INFO: Starting beans in phase 2147483646
 [thread #3 - file://data-maxGap] JiraProcessor                  INFO  Payload sent to JIRA {"fields":{"project":{"key": "NITRADEMO"},"summary": "Incident-Terminals with transaction gaps","description": "Terminals exceeding transaction gap(Max Gap : 2400sec, Transaction Date : 2018-02-13) [SCS01T01, SCS00T01, SCS00T02, FM02T02, FM01T01, CH00T01, CH01T02, CH01T03, PB01T01, PB01T02]","issuetype": {"name": "Task"}}}
 ```
 
-   * delete csv files from `data-maxGap` directory and change `propertyName="maxGapProcessor.maxGapInSeconds"` in `routes/maxGapRoute.xml` to `3600`
+   * delete csv files from `data-maxGap` directory and change `propertyName="maxGapProcessor.maxGapInSeconds"` 
+   in `routes/maxGapRoute.xml` to `3600`. When saved, route is reloaded. 
    
 ```
 [#6 - FileWatcherReloadStrategy] FileWatcherReloadStrategy      WARN  Cannot load the resource C:\Users\moro\git\TomasBahnik\process_orchestration\standalone-main\routes\maxGapRoute.xml as XML
@@ -124,7 +125,8 @@ INFO: Starting beans in phase 2147483646
 [#6 - FileWatcherReloadStrategy] FileWatcherReloadStrategy      INFO  Reloaded routes: [maxGapRoute] from XML resource: C:\Users\moro\git\TomasBahnik\process_orchestration\standalone-main\routes\maxGapRoute.xml
 ```
  
-   * copy `terminal.csv` and `transactions.csv` CSV files to `data-maxGap` directory
+   * copy `terminal.csv` and then `transactions.csv` CSV files to `data-maxGap` directory. Max gap s changed and list of terminals is smaller.
+   * optionally delete csv files from `data-maxGap` directory
 
 ```
 [thread #9 - file://data-maxGap] MaxGapProcessor                INFO  maxGapInSeconds = 3600, transactionDate = 2018-02-13
@@ -138,7 +140,7 @@ INFO: Starting beans in phase 2147483646
 [thread #9 - file://data-maxGap] JiraProcessor                  INFO  Payload sent to JIRA {"fields":{"project":{"key": "NITRADEMO"},"summary": "Incident-Terminals with transaction gaps","description": "Terminals exceeding transaction gap(Max Gap : 3600sec, Transaction Date : 2018-02-13) [CH01T02, CH01T03]","issuetype": {"name": "Task"}}}
 ```
 
-   * copy `terminal.csv` `terminal-data-usage.csv` and `transactions.csv` CSV files to `data-usage` directory
+   * copy `terminal.csv` then `terminal-data-usage.csv` and finally `transactions.csv` CSV files to `data-usage` directory
 
 ```
 [ thread #2 - file://data-usage] DataUsageProcessor             INFO  Bytes Per Transaction = 2500
@@ -168,7 +170,8 @@ INFO: Starting beans in phase 2147483646
 
    * delete `terminal.csv` `terminal-data-usage.csv` and `transactions.csv` CSV files to `data-usage` directory
    and change  `propertyName="dataUsage.bytesPerTransaction"` in `routes/dataUsageRoute.xml` to `2000`
-   * copy `terminal.csv` `terminal-data-usage.csv` and `transactions.csv` CSV files to `data-usage` directory
+   * copy `terminal.csv` `terminal-data-usage.csv` and `transactions.csv` CSV files to `data-usage` directory. Few terminals have 
+   expected/real ratio higher than 1.
 
 ```
 [thread #12 - file://data-usage] DataUsageProcessor             INFO  Bytes Per Transaction = 2000
