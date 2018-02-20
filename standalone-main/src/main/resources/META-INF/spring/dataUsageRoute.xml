@@ -38,7 +38,7 @@
                     <otherwise>
                     </otherwise>
                 </choice>
-                <log message="Do not send to JIRA"/>
+                <log message="No incident reported to JIRA"/>
             </aggregate>
         </route>
     </routeContext>

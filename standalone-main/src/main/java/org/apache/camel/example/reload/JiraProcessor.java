@@ -29,18 +29,22 @@ public class JiraProcessor implements Processor {
             int maxGapInSeconds = exchange.getProperty(MaxGapProcessor.MAX_GAP_PROCESSOR_MAX_GAP_IN_SECONDS, Integer.class);
             String transactionDate = exchange.getProperty(MaxGapProcessor.MAX_GAP_PROCESSOR_TRANSACTION_DATE, String.class);
             LOGGER.info("Max Gap = {} sec, Transaction Date = {}", maxGapInSeconds, transactionDate);
-            LOGGER.info(TERMINALS_EXCEEDING_TRANSACTION_GAP + " : {}", inBody);
-            String taskJson = JIRA_TASK_TEMP_GAP.replace(DESCRIPTION, TERMINALS_EXCEEDING_TRANSACTION_GAP +
-                    "(Max Gap : " + maxGapInSeconds + "sec, Transaction Date : " + transactionDate + ") "
-                    + inBody);
-            LOGGER.info("Payload sent to JIRA {}", taskJson);
-            exchange.getIn().setBody(taskJson);
+            if (exchange.getIn().getHeader(DataUsageProcessor.SEND_TO_JIRA) != null) {
+                LOGGER.info(TERMINALS_EXCEEDING_TRANSACTION_GAP + " : {}", inBody);
+                String taskJson = JIRA_TASK_TEMP_GAP.replace(DESCRIPTION, TERMINALS_EXCEEDING_TRANSACTION_GAP +
+                        "(Max Gap : " + maxGapInSeconds + "sec, Transaction Date : " + transactionDate + ") "
+                        + inBody);
+                LOGGER.info("Payload sent to JIRA {}", taskJson);
+                exchange.getIn().setBody(taskJson);
+            }
         }
         if (DataUsageProcessor.DATA_USAGE_OPERATION.equals(operationName)) {
-            LOGGER.info(TERMINALS_DATA_USAGE + " : {}", inBody);
-            String taskJson = JIRA_TASK_TEMP_DATA_USAGE.replace(DESCRIPTION, TERMINALS_DATA_USAGE + " : " + inBody);
-            LOGGER.info("Payload sent to JIRA {}", taskJson);
-            exchange.getIn().setBody(taskJson);
+            if (exchange.getIn().getHeader(DataUsageProcessor.SEND_TO_JIRA) != null) {
+                LOGGER.info(TERMINALS_DATA_USAGE + " : {}", inBody);
+                String taskJson = JIRA_TASK_TEMP_DATA_USAGE.replace(DESCRIPTION, TERMINALS_DATA_USAGE + " : " + inBody);
+                LOGGER.info("Payload sent to JIRA {}", taskJson);
+                exchange.getIn().setBody(taskJson);
+            }
         }
     }
 }

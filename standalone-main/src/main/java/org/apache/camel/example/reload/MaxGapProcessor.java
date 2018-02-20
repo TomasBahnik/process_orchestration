@@ -1,5 +1,6 @@
 package org.apache.camel.example.reload;
 
+import static org.apache.camel.example.reload.DataUsageProcessor.SEND_TO_JIRA;
 import static org.apache.camel.example.reload.TrendAnomaly.REQUEST_DATE_PATTERN;
 import static org.apache.camel.example.reload.TrendAnomaly.TRANSACTION_TIMEZONE;
 
@@ -51,16 +52,12 @@ public class MaxGapProcessor implements Processor {
         LOGGER.info("Terminals count = {}", terminalsSet.size());
         CSVParser csvTransactions = CSVParser.parse(transactions, ExpectedTerminalDataUsage.TRX_CSV_FORMAT);
         int count = 10;
-/*
-        Map<String, Integer> expectedDataUsage =
-                ExpectedTerminalDataUsage.getExpectedTerminalDataUsage(terminalsSet, csvTransactions,
-                        ExpectedTerminalDataUsage.BYTES_PER_TRANSACTION, ExpectedTerminalDataUsage.FROM);
-        for (String terminalId : expectedDataUsage.keySet()) {
-            LOGGER.info("TerminalID {}: Usage {} MB", terminalId, expectedDataUsage.get(terminalId));
-        }
-*/
-
         Set<String> terminalsExceedingGap = TrendAnomaly.getTerminalsExceedingGap(terminalsSet, maxGapInSeconds, transactionDate, FROM, TO, csvTransactions);
+        if (terminalsExceedingGap.isEmpty()) {
+            LOGGER.info("No terminals with exceeding gap");
+        } else {
+            exchange.getIn().setHeader(SEND_TO_JIRA, terminalsExceedingGap.size());
+        }
         exchange.setProperty(MAX_GAP_PROCESSOR_MAX_GAP_IN_SECONDS, maxGapInSeconds);
         exchange.setProperty(MAX_GAP_PROCESSOR_TRANSACTION_DATE, date);
         exchange.setProperty(OPERATION_NAME, MAX_GAP_OPERATION);

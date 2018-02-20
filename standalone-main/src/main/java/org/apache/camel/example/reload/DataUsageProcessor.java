@@ -15,6 +15,7 @@ public class DataUsageProcessor implements Processor {
     private static final String DATA_USAGE_BYTES_PER_TRANSACTION = "dataUsage.bytesPerTransaction";
     static final String DATA_USAGE_FROM = "dataUsage.from";
     static final String DATA_USAGE_OPERATION = "dataUsage";
+    static final String SEND_TO_JIRA = "sendToJira";
     private int bytesPerTransaction;
 
     @Override
@@ -56,7 +57,7 @@ public class DataUsageProcessor implements Processor {
         }
         exchange.setProperty(MaxGapProcessor.OPERATION_NAME, DATA_USAGE_OPERATION);
         if (exceeded > 0) {
-            exchange.getIn().setHeader("sendToJira", exceeded);
+            exchange.getIn().setHeader(SEND_TO_JIRA, exceeded);
         } else {
             LOGGER.info("No terminals with exceeded usage");
         }

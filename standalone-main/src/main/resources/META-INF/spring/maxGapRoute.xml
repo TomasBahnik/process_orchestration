@@ -31,8 +31,17 @@
                 <setHeader headerName="Content-Type">
                     <constant>application/json</constant>
                 </setHeader>
-                <to uri="https4://{{jira.host}}/rest/api/2/issue?authMethod=Basic&amp;authUsername={{jira.username}}&amp;authPassword={{jira.password}}&amp;authenticationPreemptive=true"/>
-                <log message="JIRA response : ${body}"/>
+                <choice>
+                    <when>
+                        <!-- is there a header with the key sendToJira? -->
+                        <header>sendToJira</header>
+                        <to uri="https4://{{jira.host}}/rest/api/2/issue?authMethod=Basic&amp;authUsername={{jira.username}}&amp;authPassword={{jira.password}}&amp;authenticationPreemptive=true"/>
+                        <log message="JIRA response : ${body}"/>
+                    </when>
+                    <otherwise>
+                    </otherwise>
+                </choice>
+                <log message="No incident reported to JIRA"/>
             </aggregate>
         </route>
     </routeContext>

@@ -125,7 +125,7 @@ INFO: Starting beans in phase 2147483646
 [#6 - FileWatcherReloadStrategy] FileWatcherReloadStrategy      INFO  Reloaded routes: [maxGapRoute] from XML resource: C:\Users\moro\git\TomasBahnik\process_orchestration\standalone-main\routes\maxGapRoute.xml
 ```
  
-   * copy `terminal.csv` and then `transactions.csv` CSV files to `data-maxGap` directory. Max gap s changed and list of terminals is smaller.
+   * copy `terminal.csv` and then `transactions.csv` CSV files to `data-maxGap` directory. Max gap has changed and list of terminals is smaller.
    * optionally delete csv files from `data-maxGap` directory
 
 ```
